@@ -574,8 +574,21 @@ Control.prototype.draw = function(ctx){
 	switch(this.shape){
 		
 		case Control.SHAPE_CIRCLE:{
-			ctx.arc(this.x,this.y,this.size/2,0,Math.PI*2);
+			ctx.arc(this.x,this.y,this.size/1.2,0,Math.PI*2);
+			ctx.fillStyle = "#ffa400";
+			ctx.strokeStyle = "#fff";
+
+			ctx.shadowColor = 'rgba(0,0,0,.3)';
+			ctx.shadowBlur = 6;
+			ctx.shadowOffsetY = 2;
+
+			ctx.stroke();
 			ctx.fill();
+
+			ctx.shadowColor = 0; //fix stroke Shadow
+			ctx.shadowBlur = 0; 
+			ctx.shadowOffsetY = 0;
+			
 			ctx.stroke();
 			break;
 		}
@@ -583,7 +596,20 @@ Control.prototype.draw = function(ctx){
 		case Control.SHAPE_SQUARE:{
 			x = (this.x - this.size/2)|0;
 			y = (this.y - this.size/2)|0;
+			ctx.strokeStyle = "#fff";
+			ctx.fillStyle = "#129AFE";
+
+			ctx.shadowColor = 'rgba(0,0,0,.3)';
+			ctx.shadowBlur = 6;
+			ctx.shadowOffsetY = 2;
+			
 			ctx.fillRect(x, y, this.size, this.size);
+			ctx.strokeRect(x, y, this.size, this.size);
+
+			ctx.shadowColor = 0;
+			ctx.shadowBlur = 0;
+			ctx.shadowOffsetY = 0;
+
 			ctx.strokeRect(x, y, this.size, this.size);
 			break;
 		}
@@ -591,6 +617,7 @@ Control.prototype.draw = function(ctx){
 		case Control.SHAPE_BORDER:{
 			// render to half pixel for hard lines
 			ctx.fillStyle = "";
+			ctx.lineWidth = 1;
 			var t = this.tool.target;
 			var m = this.tool.endMatrix;
 			
@@ -699,10 +726,10 @@ ControlSet.getScalerWithRotate = function(){
 		new this.controlClass(Control.BORDER),
 		translater,
 		new this.controlClass(Control.ROTATE, .5,0, 0,-20, 10),
-		new this.controlClass(Control.SCALE, 0,0, 0,0, 10),
-		new this.controlClass(Control.SCALE, 0,1, 0,0, 10),
-		new this.controlClass(Control.SCALE, 1,0, 0,0, 10),
-		new this.controlClass(Control.SCALE, 1,1, 0,0, 10),
+		new this.controlClass(Control.SCALE_UNIFORM, 0,0, 0,0, 12),
+		new this.controlClass(Control.SCALE_UNIFORM, 0,1, 0,0, 12),
+		new this.controlClass(Control.SCALE_UNIFORM, 1,0, 0,0, 12),
+		new this.controlClass(Control.SCALE_UNIFORM, 1,1, 0,0, 12),
 		new this.controlClass(Control.SCALE_X, 0,.5, 0,0, 10),
 		new this.controlClass(Control.SCALE_X, 1,.5, 0,0, 10),
 		new this.controlClass(Control.SCALE_Y, .5,0, 0,0, 10),

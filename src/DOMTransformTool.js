@@ -68,8 +68,26 @@ DOMControl.prototype.setStyle = function(elem, fill){
 	}else{
 		elem.setAttribute("fill", "none");
 	}
-	elem.setAttribute("stroke", this.tool.strokeStyle);
-	elem.setAttribute("stroke-width", this.tool.lineWidth);
+	
+	switch (elem.nodeName) {
+		case "polygon": 
+			elem.setAttribute("stroke-width", 1);
+			elem.setAttribute("stroke", this.tool.strokeStyle);
+			break;
+		case "circle": 
+			elem.setAttribute("fill", "url(#circle-grad)");
+			elem.setAttribute("style", "filter:url(#dropshadow)");
+			elem.setAttribute("stroke-width", this.tool.lineWidth);
+			elem.setAttribute("stroke", "#fff");
+			break;
+		case "rect":
+			elem.setAttribute("fill", "url(#rect-grad)");
+			elem.setAttribute("style", "filter:url(#dropshadow)");
+			elem.setAttribute("stroke-width", this.tool.lineWidth);
+			elem.setAttribute("stroke", "#fff");
+			break;
+	}
+	
 }
 
 DOMControl.prototype.draw = function(container){
@@ -101,7 +119,7 @@ DOMControl.prototype.draw = function(container){
 			if (!elem){
 				elem = document.createElementNS(container.namespaceURI, "circle"); 
 				elem.id = this.id;
-				elem.r.baseVal.value = this.size/2;
+				elem.r.baseVal.value = this.size/1.5;
 				this.setStyle(elem);
 				container.appendChild(elem);
 			}
