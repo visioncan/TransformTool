@@ -47,6 +47,36 @@ DOMTransformTool.prototype.shouldDraw = function(){
 function DOMControl(type, u, v, offsetX, offsetY, size){
 	DOMControl.prototype._super.call(this, type, u, v, offsetX, offsetY, size);
 	this.id = DOMControl.idPrefix + (++DOMControl.idCounter);
+
+	switch(type) {
+		case Control.SCALE_UNIFORM:
+			if (this.u === 0 && this.v === 0 || this.u === 1 && this.v === 1) {
+				this.className = 'nwse-resize';
+			}else if (this.u === 0 && this.v === 1 || this.u === 1 && this.v === 0) {
+				this.className = 'nesw-resize';
+			}
+			break;
+
+		case Control.SCALE_X:
+			if (this.u === 0 && this.v === 0.5 || this.u === 1 && this.v === 0.5) {
+				this.className = 'ew-resize';
+			}
+			break;
+
+		case Control.SCALE_Y:
+			if (this.u === 0.5 && this.v === 0 || this.u === 0.5 && this.v === 1) {
+				this.className = 'ns-resize';
+			}
+			break;
+
+		case Control.ROTATE:
+			this.className = 'grab';
+			break;
+
+		default: 
+			this.className = '';
+	}
+	
 }
 
 DOMControl.idCounter = 0;
@@ -62,13 +92,17 @@ DOMControl.prototype.undraw = function(){
 	}
 }
 
-DOMControl.prototype.setStyle = function(elem, fill){
+DOMControl.prototype.setStyle = function(elem, className, fill){
 	if (fill !== false){
 		elem.setAttribute("fill", this.tool.fillStyle);
 	}else{
 		elem.setAttribute("fill", "none");
 	}
-	
+
+	if (typeof className !== 'undefined' && className !== '' ) {
+		elem.setAttribute("class", className);
+	}
+
 	switch (elem.nodeName) {
 		case "polygon": 
 			elem.setAttribute("stroke-width", 1);
@@ -120,7 +154,7 @@ DOMControl.prototype.draw = function(container){
 				elem = document.createElementNS(container.namespaceURI, "circle"); 
 				elem.id = this.id;
 				elem.r.baseVal.value = this.size/1.5;
-				this.setStyle(elem);
+				this.setStyle(elem, this.className);
 				container.appendChild(elem);
 			}
 			
@@ -135,7 +169,7 @@ DOMControl.prototype.draw = function(container){
 				elem.id = this.id;
 				elem.width.baseVal.value = this.size;
 				elem.height.baseVal.value = this.size;
-				this.setStyle(elem);
+				this.setStyle(elem, this.className);
 				container.appendChild(elem);
 			}
 			
@@ -151,7 +185,7 @@ DOMControl.prototype.draw = function(container){
 				for (i=0; i<4; i++){
 					elem.points.appendItem(container.createSVGPoint());
 				}
-				this.setStyle(elem, false);
+				this.setStyle(elem, this.className, false);
 				container.appendChild(elem);
 			}
 			
